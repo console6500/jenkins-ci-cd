@@ -16,7 +16,7 @@ pipeline {
             steps {
                 sh('''
                     #!/bin/bash
-                    python3 -m virtualenv local
+                    python3 -m venv local
                     . ./local/bin/activate
                     make requirements
                 ''')
