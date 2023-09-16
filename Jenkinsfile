@@ -106,5 +106,6 @@ pipeline {
         success {
             // Archive the lambda.zip file as an artifact
             archiveArtifacts artifacts: 'lambda.zip', allowEmptyArchive: false
+        }
     }
 }
