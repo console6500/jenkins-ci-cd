@@ -4,11 +4,11 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID         = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY     = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION        = 'UPDATE_THIS_VALUE'
-        STAGING_FUNCTION_NAME     = 'UPDATE_THIS_VALUE'
-        STAGING_URL               = 'UPDATE_THIS_VALUE'
-        PRODUCTION_FUNCTION_NAME  = 'UPDATE_THIS_VALUE'
-        PRODUCTION_URL            = 'UPDATE_THIS_VALUE'
+        AWS_DEFAULT_REGION        = 'us-east-2'
+        STAGING_FUNCTION_NAME     = 'sample-application-staging'
+        STAGING_URL               = 'https://nphukndnle4gm37v3bffyhdvri0dvzaz.lambda-url.us-east-2.on.aws/'
+        PRODUCTION_FUNCTION_NAME  = 'sample-application-production'
+        PRODUCTION_URL            = 'https://x2kwlkaff4pjobsjjtgl4ssdce0ceiof.lambda-url.us-east-2.on.aws/'
     }
 
     stages {
@@ -105,5 +105,6 @@ pipeline {
         success {
             // Archive the lambda.zip file as an artifact
             archiveArtifacts artifacts: 'lambda.zip', allowEmptyArchive: false
+        }
     }
 }
