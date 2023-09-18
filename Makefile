@@ -1,11 +1,17 @@
 FUNCTION=undefined
 PLATFORM=undefined
-ENVIRONMENT=undefined
 URL=undefined
 VERSION=undefined
 BUILD_NUMBER=undefined
-
 CODE=$(shell ls *.py)
+
+ifneq (,$(findstring -staging,$(FUNCTION)))
+	ENVIRONMENT = STAGING
+else ifneq (,$(findstring -production,$(FUNCTION)))
+	ENVIRONMENT = PRODUCTION
+else
+	ENVIRONMENT = undefined
+endif
 
 hello:
 	@echo "Here are the targets for this Makefile:"
@@ -27,7 +33,6 @@ hello:
 	@echo "  make deploy FUNCTION=sample-application-staging"
 	@echo
 	@echo "Optional deploy variables are:"
-	@echo "  ENVIRONMENT   - the intended environment for the deployment (default: undefined)"
 	@echo "  VERSION       - the version of the code being deployed (default: undefined)"
 	@echo "  PLATFORM      - the platform being used for the deployment (default: undefined)"
 	@echo "  BUILD_NUMBER  - the build number assigned by the deployment platform (default: undefined)"
@@ -68,7 +73,7 @@ deploy:
 
 	aws lambda update-function-configuration \
 		--function-name="$(FUNCTION)" \
-		--environment "Variables={PLATFORM=$(PLATFORM),ENVIRONMENT=$(ENVIRONMENT),VERSION=$(VERSION),BUILD_NUMBER=$(BUILD_NUMBER)}"
+		--environment "Variables={PLATFORM=$(PLATFORM),VERSION=$(VERSION),BUILD_NUMBER=$(BUILD_NUMBER),ENVIRONMENT=$(ENVIRONMENT)}"
 
 	aws lambda wait function-updated \
 		--function-name="$(FUNCTION)"
@@ -81,7 +86,7 @@ deploy:
 		--function-name="$(FUNCTION)"
 
 testdeployment:
-	curl -s $(URL) | grep "<h1>The Sample Application</h1>"
+	curl -s $(URL) | grep $(VERSION)
 
 clean:
 	rm -vf lambda.zip
@@ -89,4 +94,3 @@ clean:
 all: clean lint black test build deploy
 
 .PHONY: test build deploy all clean
-
